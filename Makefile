@@ -1,4 +1,4 @@
-.PHONY: build run test clean docs docker-build docker-run
+.PHONY: build run test clean docs docker-build docker-run migrate migrate-status
 
 # Переменные
 APP_NAME := crypto-watcher
@@ -10,6 +10,12 @@ build:
 	@echo "Building $(APP_NAME)..."
 	@go build -o $(BUILD_DIR)/$(APP_NAME) cmd/main.go
 	@echo "Build complete: $(BUILD_DIR)/$(APP_NAME)"
+
+# Сборка CLI утилиты миграций
+build-migrate:
+	@echo "Building migration CLI..."
+	@go build -o $(BUILD_DIR)/migrate cmd/migrate/main.go
+	@echo "Migration CLI built: $(BUILD_DIR)/migrate"
 
 # Запуск приложения
 run:
@@ -27,35 +33,25 @@ docs:
 	@echo "Generating Swagger docs..."
 	@swag init -g cmd/main.go
 
+# Выполнение миграций базы данных
+migrate:
+	@echo "Running database migrations..."
+	@go run cmd/migrate/main.go migrate
+
+# Проверка статуса миграций
+migrate-status:
+	@echo "Checking migration status..."
+	@go run cmd/migrate/main.go status
+
 # Запуск тестов
 test:
 	@echo "Running tests..."
 	@go test -v ./...
 
-# Тестирование подключения к БД
-test-db:
-	@echo "Testing database connection..."
-	@go run test_db_connection.go
-
-# Инициализация базы данных
+# Инициализация базы данных (устаревший метод)
 init-db:
 	@echo "Initializing database..."
-	@psql -h localhost -p 5436 -U postgres -d postgres -f setup_database.sql
-
-# Проверка PostgreSQL на разных портах
-check-postgres:
-	@echo "Checking PostgreSQL on different ports..."
-	@./check_postgres.bat
-
-# Тестирование API
-test-api:
-	@echo "Testing API endpoints..."
-	@./test_data_insertion.bat
-
-# Интерактивная демонстрация API
-demo:
-	@echo "Starting interactive API demo..."
-	@./demo_api.bat
+	@psql -h localhost -p 5432 -U postgres -d postgres -f setup_database.sql
 
 # Очистка build директории
 clean:
@@ -87,18 +83,8 @@ docker-clean:
 	@echo "Cleaning up Docker..."
 	@docker-compose down --rmi all --volumes --remove-orphans
 
-# Быстрое тестирование Docker
-docker-test:
-	@echo "Quick Docker Compose test..."
-	@./quick_docker_test.bat
-
-# Полное тестирование Docker
-docker-test-full:
-	@echo "Full Docker Compose test..."
-	@./test_docker_compose.bat
-
 # Полная настройка проекта
-setup: deps docs build
+setup: deps docs build build-migrate
 	@echo "Setup complete!"
 
 # По умолчанию
