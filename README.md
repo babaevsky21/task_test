@@ -80,16 +80,20 @@ curl "http://localhost:8080/currency/price?coin=BTC&timestamp=1736500490"
 }
 ```
 
-### Автоматическое тестирование
+### Тестирование API
 
-Используйте готовые скрипты для тестирования:
+Примеры тестирования через PowerShell:
 
-```bash
-# Тестирование API эндпоинтов
-./test_data_insertion.bat
+```powershell
+# Добавление монеты
+Invoke-RestMethod -Uri "http://localhost:8080/currency/add" -Method POST -ContentType "application/json" -Body '{"coin": "BTC"}'
 
-# Или через Makefile
-make test-api
+# Получение цены
+$timestamp = [int][double]::Parse((Get-Date -UFormat %s))
+Invoke-RestMethod -Uri "http://localhost:8080/currency/price?coin=BTC&timestamp=$timestamp" -Method GET
+
+# Удаление монеты
+Invoke-RestMethod -Uri "http://localhost:8080/currency/remove" -Method DELETE -ContentType "application/json" -Body '{"coin": "BTC"}'
 ```
 
 ## Архитектура
