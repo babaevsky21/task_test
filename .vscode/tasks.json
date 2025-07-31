@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"args": [
+				"run",
+				"cmd/main.go"
+			],
+			"command": "go",
+			"group": "build",
+			"isBackground": true,
+			"label": "Run Crypto Watcher",
+			"problemMatcher": [
+				"$go"
+			],
+			"type": "shell"
+		}
+	]
+}

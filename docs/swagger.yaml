@@ -1,0 +1,141 @@
+basePath: /
+definitions:
+  models.AddCoinRequest:
+    properties:
+      coin:
+        type: string
+    required:
+    - coin
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.PriceHistory:
+    properties:
+      coin:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      timestamp:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Микросервис для мониторинга криптовалют
+  title: Crypto Watcher API
+  version: "1.0"
+paths:
+  /currency/add:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет криптовалюту в список наблюдения
+      parameters:
+      - description: Данные криптовалюты
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCoinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Добавить криптовалюту в watchlist
+      tags:
+      - currency
+  /currency/price:
+    get:
+      consumes:
+      - application/json
+      description: Получает цену криптовалюты на указанный момент времени
+      parameters:
+      - description: Название криптовалюты
+        in: query
+        name: coin
+        required: true
+        type: string
+      - description: Unix timestamp
+        in: query
+        name: timestamp
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PriceHistory'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Получить цену криптовалюты
+      tags:
+      - currency
+  /currency/remove:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет криптовалюту из списка наблюдения
+      parameters:
+      - description: Данные криптовалюты
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCoinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Удалить криптовалюту из watchlist
+      tags:
+      - currency
+swagger: "2.0"
