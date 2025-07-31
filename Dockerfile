@@ -8,11 +8,10 @@ COPY . .
 RUN go build -o main cmd/main.go
 
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates wget
 WORKDIR /root/
 
 COPY --from=builder /app/main .
-COPY --from=builder /app/.env .
 
 EXPOSE 8080
 CMD ["./main"]

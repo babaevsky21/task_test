@@ -53,6 +53,8 @@ curl -X POST http://localhost:8080/currency/add \
   -d '{"coin": "BTC"}'
 ```
 
+**Ответ:** `{"message":"Coin added successfully"}`
+
 ### Удаление криптовалюты из watchlist
 
 ```bash
@@ -65,6 +67,29 @@ curl -X DELETE http://localhost:8080/currency/remove \
 
 ```bash
 curl "http://localhost:8080/currency/price?coin=BTC&timestamp=1736500490"
+```
+
+**Ответ:**
+```json
+{
+  "id": 1,
+  "coin": "BTC",
+  "price": 45000.50,
+  "timestamp": 1736500490,
+  "created_at": "2025-07-30T20:00:00Z"
+}
+```
+
+### Автоматическое тестирование
+
+Используйте готовые скрипты для тестирования:
+
+```bash
+# Тестирование API эндпоинтов
+./test_data_insertion.bat
+
+# Или через Makefile
+make test-api
 ```
 
 ## Архитектура

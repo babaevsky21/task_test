@@ -50,7 +50,12 @@ check-postgres:
 # Тестирование API
 test-api:
 	@echo "Testing API endpoints..."
-	@./test_api.bat
+	@./test_data_insertion.bat
+
+# Интерактивная демонстрация API
+demo:
+	@echo "Starting interactive API demo..."
+	@./demo_api.bat
 
 # Очистка build директории
 clean:
@@ -67,10 +72,30 @@ docker-run:
 	@echo "Starting with Docker Compose..."
 	@docker-compose up --build
 
+# Запуск в фоновом режиме
+docker-up:
+	@echo "Starting Docker Compose in background..."
+	@docker-compose up --build -d
+
 # Остановка Docker Compose
 docker-stop:
 	@echo "Stopping Docker Compose..."
 	@docker-compose down
+
+# Полная очистка Docker
+docker-clean:
+	@echo "Cleaning up Docker..."
+	@docker-compose down --rmi all --volumes --remove-orphans
+
+# Быстрое тестирование Docker
+docker-test:
+	@echo "Quick Docker Compose test..."
+	@./quick_docker_test.bat
+
+# Полное тестирование Docker
+docker-test-full:
+	@echo "Full Docker Compose test..."
+	@./test_docker_compose.bat
 
 # Полная настройка проекта
 setup: deps docs build
